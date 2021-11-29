@@ -23,7 +23,7 @@ def load_data():
     return data
 
 st.title("Unemployment in India")
-st.sidebar.header("Project Options")
+st.sidebar.header("Project Options:-")
 
 options = [
             "Overview",
@@ -32,7 +32,7 @@ options = [
             "Estimated Employed",
             "Region wise"]
 
-choice = st.sidebar.selectbox("select an option",options)
+choice = st.sidebar.selectbox("Select an Option",options)
 
 data = load_data()
 # st.write(data.columns.tolist())
@@ -48,36 +48,50 @@ elif choice == options[1]:
     statelist.sort()
     statelist.pop()
     # st.write(statelist)
-    state = st.selectbox("select a state",statelist)
+    state = st.selectbox("Select a State",statelist)
     try:
-        color=st.sidebar.color_picker("select graph color")
+        color=st.sidebar.color_picker("Select Graph Color")
         fig,ax = plt.subplots()
         data_state = data[data['States']==state].set_index('Date')['Estimated Unemployment Rate']
         state_data = data_state.resample('M').sum()
         fig = px.line(state_data, y= "Estimated Unemployment Rate",)
         st.plotly_chart(fig)
-        st.info(''' 
+        st.info(''' CONCLUSION:-
+
+    Estimated Unemployment Rate in Different States in different month from 2019
+    to 2020.
         ''')
     except Exception as e:
         st.error(f"Please ask the admin {e}")
 
 elif choice == options[2]:
-    color=st.sidebar.color_picker("select graph color")
+    color=st.sidebar.color_picker("Select Graph Color")
     fig,ax = plt.subplots()
-    op = st.selectbox("select a category",["Estimated Unemployment Rate","Estimated Employed","Estimated Labour Participation Rate"])
+    op = st.selectbox("Select a Category",["Estimated Unemployment Rate","Estimated Employed","Estimated Labour Participation Rate"])
     data.groupby(['States'])[op].sum().reset_index().sort_values(by=op).tail(10).plot(kind='bar',x='States',figsize=(15,10),ax=ax,color=color)
     st.pyplot(fig)
+    st.info(''' CONCLUSION:-
+
+    Estimated Unemployment Rate in Tripura is highest and lowest in Punjab.              
+    Estimated Employed Rate in Uttar Pradesh is highest and lowest in Andra Pradesh.                  
+    Estimated Labour Participation Rate is highest in Tripura and lowest in Jharkhand.
+    ''')
 
 elif choice == options[3]:
-    color=st.sidebar.color_picker("select graph color")
     fig,ax = plt.subplots()
     plt.title("Indian Unemployment")
     fig = px.histogram(data,x="Estimated Employed")
     st.plotly_chart(fig)
 
 elif choice == options[4]:
-    color=st.sidebar.color_picker("select graph color")
+    color=st.sidebar.color_picker("Select Graph Color")
     fig,ax = plt.subplots()
-    op = st.selectbox("select a category",["Estimated Unemployment Rate","Estimated Employed","Estimated Labour Participation Rate"])
+    op = st.selectbox("Select a Category",["Estimated Unemployment Rate","Estimated Employed","Estimated Labour Participation Rate"])
     data.groupby(['Region'])[op].sum().reset_index().sort_values(by=op).tail(10).plot(kind='bar',x='Region',figsize=(15,10),ax=ax,color=color)
     st.pyplot(fig)
+    st.info('''CONCLUSION:-        
+
+    Estimated Unemployment Rate is highest in Urban Region.           
+    Estimated Employed Rate is Highest in Rural Region.        
+    Estimated Labour Participation Rate is almost same in both Region.
+    ''')
